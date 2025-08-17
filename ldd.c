@@ -1,5 +1,5 @@
 #include <linux/init.h>
-#include <linux/modules.h>
+#include <linux/module.h>
 #include <linux/proc_fs.h>
 
 MODULE_LICENSE("GPL"); //*
@@ -9,11 +9,23 @@ MODULE_DESCRIPTION("readlodable kernel module"); //!
 static struct proc_dir_entry *custom_proc_node;
 
 static ssize_t afrin_read(struct file* file_pointer,
-                          char *user_space_buffer,
+                          char *user_space_buffer,        //user_space_buffer is used to store the msg send to user from kernel driver
                         size_t count,
                         loff_t* offset) {
+        char msg[] = "Ack!\n";
+        size_t len= strlen(msg);
+        int result;
+
         printk("afrin_read\n");
-        return 0;
+
+        if(*offset >= len){
+            return 0;
+        }
+
+        result=copy_to_user(user_space_buffer,msg,len);
+        *offset=len;    
+
+        return len;
 }
 
 struct proc_ops driver_proc_ops={
