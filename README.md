@@ -1,7 +1,7 @@
 # device-driver
 repo for device driver code
 
-#Building and Loading driver
+# Building and Loading driver
 
 Clean: make clean
 
